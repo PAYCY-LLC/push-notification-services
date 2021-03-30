@@ -1,0 +1,78 @@
+{
+    "development": {
+        "notification": {
+            "cache_expiration": 120
+        },
+        "jwt": {
+            "secret": "secret_dev",
+            "options":{
+                "expiresIn" : "1d",
+                "issuer" : "HorizontalSystems"
+            }
+        },
+        "users": [
+            {
+                "id": 1,
+                "username": "admin",
+                "password": "secret",
+                "role": "admin"
+            },
+            {
+                "id": 2,
+                "username": "user",
+                "password": "secret",
+                "role": "user"
+            }
+        ]
+    },
+    "test": {
+        "notification": {
+            "cache_expiration": 20
+        },
+        "jwt": {
+            "secret": "secret_test",
+            "options":{
+                "expiresIn" : "1h",
+                "issuer" : "HorizontalSystems"
+            }
+        },
+        "users": [
+            {
+                "id": 1,
+                "username": "admin",
+                "password": "secret",
+                "role": "admin"
+            },
+            {
+                "id": 2,
+                "username": "user",
+                "password": "secret",
+                "role": "user"
+            }        ]
+    },
+    "production": {
+        "notification": {
+            "cache_expiration": 3600
+        },
+        "jwt": {
+            "secret": "secret_prod",
+            "options":{
+                "expiresIn" : "3h",
+                "issuer" : "HorizontalSystems"
+            }
+        },
+        "users": [
+            {
+                "id": 1,
+                "username": "admin",
+                "password": "secret",
+                "role": "admin"
+            },
+            {
+                "id": 2,
+                "username": "user",
+                "password": "secret",
+                "role": "user"
+            }        ]
+    }
+}

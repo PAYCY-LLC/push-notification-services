@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+    app:
+        container_name: push-notif-server
+        command: node -r esm bin/app.js
+        build:
+            context: '.'
+            dockerfile: './docker/Dockerfile'
+        depends_on:
+            - db
+            - redis
+        ports:
+            - '5000:5000'
+        environment:
+            - NODE_ENV=production
+            - PORT=5000
+    db:
+        container_name: postgres
+        image: postgres:12-alpine
+        ports:
+            - '5432:5432'
+        volumes:
+            - pns-postgres-data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: pns
+    redis:
+        container_name: redis
+        image: redis
+        ports:
+            - '6379:6379'
+
+volumes:
+    pns-postgres-data:

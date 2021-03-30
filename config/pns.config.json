@@ -1,0 +1,35 @@
+{
+    "development": {
+        "apn": {
+            "token": {
+                "key": "",
+                "keyId": "",
+                "teamId": ""
+            },
+            "production": false,
+            "bundle_id": "io.horizontalsystems.bank-wallet.dev"
+        }
+    },
+    "test": {
+        "apn": {
+            "token": {
+                "key": "",
+                "keyId": "",
+                "teamId": ""
+            },
+            "production": false,
+            "bundle_id": "io.horizontalsystems.bank-wallet.dev"
+        }
+    },
+    "production": {
+        "apn": {
+            "token": {
+                "key": "",
+                "keyId": "",
+                "teamId": ""
+            },
+            "production": true,
+            "bundle_id": "io.horizontalsystems.bank-wallet"
+        }
+    }
+}

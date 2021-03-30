@@ -1,0 +1,38 @@
+{
+  "name": "io.horizontalsystems.pns",
+  "version": "0.0.1",
+  "description": "Push notification Server",
+  "main": "index.js",
+  "scripts": {
+    "debug": "node --inspect -r esm bin/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^7.7.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "sqlite3": "^4.2.0"
+  },
+  "dependencies": {
+    "@parse/node-apn": "^3.1.0",
+    "app-root-path": "^3.0.0",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "const": "^1.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20",
+    "morgan": "^1.10.0",
+    "pg": "^8.2.1",
+    "pg-hstore": "^2.3.3",
+    "redis": "^3.0.2",
+    "sequelize": "^5.22.0",
+    "sequelize-cli": "^5.5.1",
+    "technicalindicators": "^3.1.0",
+    "winston": "^3.3.3"
+  }
+}
