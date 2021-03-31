@@ -19,7 +19,8 @@ class PushNotificationService {
             const channel = await StorageService.getSubscribedDevicesByType(channelName, DeviceType.IOS)
             if (channel && channel.devices) {
                 this.logger.info(`Saving message to Cache, Channel:${channelName}, ${data}`)
-                const redisRes = await this.messageCacheService.pushMessage(channelName, JSON.stringify(data))
+                const messageData = { timestamp: Math.floor(Date.now() / 1000), message: data }
+                const redisRes = await this.messageCacheService.pushMessage(channelName, JSON.stringify(messageData))
                 this.logger.info(`Redis Response:${redisRes}`)
 
                 const bundleIds = Object.entries(Utils.groupBy(channel.devices, 'bundleId'))
@@ -42,7 +43,10 @@ class PushNotificationService {
             const device = await StorageService.getDeviceChannels(token)
             if (device.channels) {
                 const cacheds = await Promise.all(device.channels.map(channel => this.messageCacheService.getMessage(channel.name)))
-                return cacheds.filter(val => val).map(str => JSON.parse(str))
+                return {
+                    server_time: Math.floor(Date.now() / 1000),
+                    messages: cacheds.filter(val => val).map(str => JSON.parse(str))
+                }
             }
         } catch (e) {
             this.logger.info(e)
