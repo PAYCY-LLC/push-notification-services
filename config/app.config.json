@@ -1,7 +1,7 @@
 {
     "development": {
         "notification": {
-            "cache_expiration": 120
+            "cache_expiration": 1800
         },
         "jwt": {
             "secret": "secret_dev",

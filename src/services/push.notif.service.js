@@ -18,8 +18,8 @@ class PushNotificationService {
             const channelName = JSON.stringify(sendTochannel)
             const channel = await StorageService.getSubscribedDevicesByType(channelName, DeviceType.IOS)
             if (channel && channel.devices) {
-                this.logger.info(`Saving message to Cache, Channe:${channelName}, ${data}`)
-                const redisRes = await this.messageCacheService.pushMessage(channelName, channelName)
+                this.logger.info(`Saving message to Cache, Channel:${channelName}, ${data}`)
+                const redisRes = await this.messageCacheService.pushMessage(channelName, JSON.stringify(data))
                 this.logger.info(`Redis Response:${redisRes}`)
 
                 const bundleIds = Object.entries(Utils.groupBy(channel.devices, 'bundleId'))
