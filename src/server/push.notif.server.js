@@ -3,10 +3,11 @@ import express from 'express';
 import cors from 'cors';
 import logger from '../utils/logger.winston'
 import db from '../models/index'
-import IdentityService from '../services/identity.service';
-import AppConfig from '../../config/app.config.json';
-import DbConfig from '../../config/db.config.json';
-import PushNotificationService from '../services/push.notif.service';
+import IdentityService from '../services/identity.service'
+import AppConfig from '../../config/app.config.json'
+import providerCoins from '../../config/provider.coins.json'
+import DbConfig from '../../config/db.config.json'
+import PushNotificationService from '../services/push.notif.service'
 import Routes from '../routes'
 
 const appConfig = AppConfig[process.env.NODE_ENV || 'development'];
@@ -53,7 +54,7 @@ class PushNotificationServer {
         logger.info(`App started listening port:${this.port}`)
 
         const identityService = new IdentityService(logger, appConfig)
-        const pushNotifService = new PushNotificationService(logger, appConfig, dbConfig)
+        const pushNotifService = new PushNotificationService(logger, appConfig, dbConfig, providerCoins)
 
         const routes = new Routes(identityService, pushNotifService)
         this.initRoutes(routes.getRouter())

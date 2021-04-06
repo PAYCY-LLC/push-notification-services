@@ -7,10 +7,10 @@ import cronТrend from 'node-cron';
 import MacdIndicator from './indicators/macd.indicator';
 import EmaIndicator from './indicators/ema.indicator';
 import RsiIndicator from './indicators/rsi.indicator';
-import Trend from '../models/trend.model';
-import TrendTerm from '../models/trend.term.model';
-import TrendState from '../models/trend.state.state';
-import Utils from '../utils/utils'
+import Trend from '../../../models/trend.model';
+import TrendTerm from '../../../models/trend.term.model';
+import TrendState from '../../../models/trend.state.state';
+import Utils from '../../../utils/utils'
 
 const CRON_DAILY_12AM = '0 10 0 * * *' // every day at 12:10 AM
 const CRON_EVERY_4H = '0 0 */4 * * *' // every 4 hours
@@ -89,7 +89,7 @@ class TrendingAnalysisService {
             }
 
             // -------Wait for limitations ---------------
-            await new Promise(r => setTimeout(r, 10));
+            await new Promise(r => setTimeout(r, 60));
             // -------------------------------------------
         }
     }
@@ -124,16 +124,6 @@ class TrendingAnalysisService {
         return { indicators, overallTrend: Trend.NEUTRAL }
     }
 
-    async sendTrendChangeNotification(coinId, trendState, trend) {
-        const channelName = `${coinId}_${trendState}term_trend_change`
-        const coinFound = this.supportedCoins.find(coin => coin.id === coinId)
-        const trendDirection = trend.toLowerCase()
-        const body = `${coinId}_trend_${trendState}term_${trendDirection}`
-
-        this.logger.info(`{TrendChange} Send Notif:  Coin:${coinId}, State:${trendState}, Trend:${trendDirection}`)
-        this.messagingProvider.sendNotificationToChannel(channelName, coinFound.title, body)
-    }
-
     async sendTrendChangeDataMessage(coinId, trendState, trend) {
         const channelName = `${coinId}_${trendState}term_trend_change`
         const coinFound = this.supportedCoins.find(coin => coin.id === coinId)
@@ -147,7 +137,7 @@ class TrendingAnalysisService {
         };
 
         this.logger.info(`{TrendChange} Send Notif: Coin:${coinId}, State:${trendState}, Trend:${trendDirection}`)
-        const status = await this.messagingProvider.sendDataMessageToChannel(channelName, data)
+        const status = await this.messagingService.sendDataToChannel(channelName, data)
 
         return status
     }

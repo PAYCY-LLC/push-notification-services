@@ -5,10 +5,10 @@ class CoinGeckoProvider {
         this.coinGeckoClient = new CoinGecko();
     }
 
-    async getXRates(coinIds, fiatCodes) {
+    async getXRates(coinIds, fiatCode) {
         const params = {
             ids: [coinIds],
-            vs_currencies: [fiatCodes],
+            vs_currencies: [fiatCode],
             include_market_cap: false,
             include_24hr_vol: false,
             include_24hr_change: false,

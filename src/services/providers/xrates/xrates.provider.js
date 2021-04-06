@@ -1,9 +1,11 @@
+/* eslint-disable max-len */
+import XRate from '../../../models/xrate.model'
 import CoinGeckoProvider from './coingecko.provider'
 
 class XRatesProvider {
-    constructor(logger, appConfig) {
+    constructor(logger, coinInfoService) {
         this.logger = logger
-        this.appConfig = appConfig
+        this.coinInfoService = coinInfoService
 
         this.defaultProvider = new CoinGeckoProvider()
     }
@@ -27,12 +29,17 @@ class XRatesProvider {
         return {}
     }
 
-    async getXRates(coinIds, fiatCodes) {
+    async getXRates(coinIds, fiatCode) {
         try {
-            const result = await this.defaultProvider.getXRates(coinIds, fiatCodes)
+            const coinInfos = await this.coinInfoService.getCoinInfos(coinIds)
 
-            if (result) {
-                return result
+            if (coinInfos) {
+                const coinGeckoIds = coinInfos.map(info => info.coinGeckoId)
+                const result = await this.defaultProvider.getXRates(coinGeckoIds, fiatCode)
+
+                if (result) {
+                    return coinInfos.map(info => new XRate(info.id, info.code, info.name, fiatCode, result.data[info.id][fiatCode.toLowerCase()]))
+                }
             }
         } catch (e) {
             this.logger.error(`Error getting XRates coinCodes: ${coinIds}: ${e}`)
@@ -40,37 +47,6 @@ class XRatesProvider {
 
         return {}
     }
-
-    static convertHistoPriceResponse(coinCode, fiatCode, result) {
-        if (result) {
-            const xrates = []
-            result.forEach(element => {
-                xrates.push(new XRate(coinCode, coinCode, fiatCode, element.close, element.time))
-            })
-
-            return xrates;
-        }
-        return []
-    }
-
-    static convertPriceResponse(result) {
-        if (result) {
-            const xRates = Object.entries(result).map(
-                resultData => {
-                    const ents = Object.entries(resultData[1]).map(
-                        coinData => Object.entries(coinData[1]).map(
-                            fiatData => new XRate(coinData[0], coinData[0], fiatData[0], fiatData[1])
-                        )
-                    )
-                    return [].concat(...ents)
-                }
-            )
-
-            return [].concat(...xRates);
-        }
-        return {}
-    }
-
 }
 
 export default XRatesProvider;

@@ -1,8 +1,52 @@
 import ChannelEntity from '../models/channel.entity';
+import CoinInfoEntity from '../models/coin.info.entity';
 import DeviceEntity from '../models/device.entity';
+import ResourceInfoEntity from '../models/resource.info.entity';
 import UserEntity from '../models/user.entity';
 
 class StorageService {
+    static async saveResourceInfo(newItem) {
+        const foundItem = await ResourceInfoEntity.findOne({ where: { name: newItem.name } });
+        if (!foundItem) {
+            const item = await ResourceInfoEntity.create(newItem)
+            return item;
+        }
+        const item = await ResourceInfoEntity.update(newItem, { where: { name: newItem.name } });
+        return item;
+    }
+
+    static getResourceInfo(name) {
+        return ResourceInfoEntity.findOne({ where: { name } });
+    }
+
+    static getCoinInfos(coinIds) {
+        return CoinInfoEntity.findAll({
+            where: {
+                id: coinIds
+            }
+        });
+    }
+
+    static getCoinInfo(coinId) {
+        return CoinInfoEntity.findOne({
+            where: {
+                id: coinId
+            }
+        });
+    }
+
+    static saveCoinInfos(coinInfos) {
+        return CoinInfoEntity.bulkCreate(coinInfos, {
+            ignoreDuplicates: true
+        })
+    }
+
+    static removeAllCoinInfos() {
+        return CoinInfoEntity.destroy({
+            truncate: true
+        })
+    }
+
     static getUserByUsername(username) {
         return UserEntity.findOne({
             where: { username },
@@ -22,6 +66,12 @@ class StorageService {
             where: {
                 name: channelNames
             },
+            order: [['name', 'DESC']]
+        });
+    }
+
+    static getAllChannels() {
+        return ChannelEntity.findAll({
             order: [['name', 'DESC']]
         });
     }

@@ -1,26 +1,25 @@
-import XRatesProvider from './providers/xrates/xrates.provider';
+import XRatesProvider from '../providers/xrates/xrates.provider';
 
 class DataCollectorService {
-    constructor(logger, appConfig) {
+    constructor(logger, coinInfoService) {
         this.logger = logger;
-        this.appConfig = appConfig;
 
         this.xratesProvider = new XRatesProvider(
             this.logger,
-            this.appConfig
+            coinInfoService
         );
     }
 
-    async getLatestXRates(supportedCoinCodes, baseCurrency) {
-        return this.xratesProvider.getXRates(supportedCoinCodes, baseCurrency)
+    async getLatestXRates(coinIds, fiatCode) {
+        return this.xratesProvider.getXRates(coinIds, fiatCode)
     }
 
-    async getDailyOpeningXRates(supportedCoinCodes, baseCurrency) {
-        return this.xratesProvider.getXRates(supportedCoinCodes, baseCurrency)
+    async getDailyOpeningXRates(coinIds, fiatCode) {
+        return this.xratesProvider.getXRates(coinIds, fiatCode)
     }
 
-    async getHistoricalXRates(coinCode, fiatCode, timePeriod, aggregate, limit, toTimestamp) {
-        return this.xratesProvider.getHistoricalXRates(coinCode, fiatCode, timePeriod, aggregate, limit, toTimestamp)
+    async getHistoricalXRates(coinId, fiatCode, timePeriod, aggregate, limit, toTimestamp) {
+        return this.xratesProvider.getHistoricalXRates(coinId, fiatCode, timePeriod, aggregate, limit, toTimestamp)
     }
 }
 

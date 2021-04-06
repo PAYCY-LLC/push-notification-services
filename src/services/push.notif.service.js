@@ -4,13 +4,20 @@ import DeviceType from '../models/device.type'
 import Utils from '../utils/utils'
 import StorageService from './storage.service'
 import MessageCacheService from './message.cache.service';
+import CoinInfoService from './coin.info.service'
+import MonitoringService from './monitoring/monitoring.service'
+import ChannelType from '../models/channel.type'
 
 class PushNotificationService {
-    constructor(logger, appConfig, dbConfig) {
+    constructor(logger, appConfig, dbConfig, providerCoins) {
         this.logger = logger
         this.appConfig = appConfig
+        this.providerCoins = providerCoins
+        this.baseCurrency = 'USD'
         // this.apnsProvider = new ApnsProvider(appConfig, logger);
         this.messageCacheService = new MessageCacheService(logger, appConfig, dbConfig)
+        this.coinInfoService = new CoinInfoService(logger, providerCoins)
+        this.monitoringService = new MonitoringService(logger, this.baseCurrency, this, this.coinInfoService)
     }
 
     async sendDataToChannel(sendTochannel, data) {
@@ -26,7 +33,7 @@ class PushNotificationService {
                 const bundleIds = Object.entries(Utils.groupBy(channel.devices, 'bundleId'))
                 bundleIds.forEach(async bundle => {
                     if (bundle[1]) {
-                        const tokens = bundle[1].map(d => d.token)
+                        // const tokens = bundle[1].map(d => d.token)
                         // this.logger.info(`Sending message to APN ${bundle[0]} , tokens:${tokens}`)
                         // const res = await this.apnsProvider.sendDataMessage(tokens, data, bundle[0])
                         // this.logger.info(`APNS Response:${JSON.stringify(res)}`)
@@ -66,6 +73,11 @@ class PushNotificationService {
 
             if (createdChannel) {
                 const created = StorageService.addDeviceToChannel(token, bundleId, createdChannel)
+
+                if (channel.type === ChannelType.CRYPTO_PRICE || channel.type === ChannelType.TRENDS) {
+                    this.monitoringService.updateActiveCoins(channel.type, [channel.data.coin_id])
+                }
+
                 return { id: created.id }
             }
         } catch (e) {
