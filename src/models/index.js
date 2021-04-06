@@ -3,6 +3,8 @@ import DeviceEntity from './device.entity';
 import ChannelEntity from './channel.entity';
 import UserEntity from './user.entity';
 import dbConfig from '../../config/db.config.json';
+import ResourceInfoEntity from './resource.info.entity';
+import CoinInfoEntity from './coin.info.entity';
 
 const config = dbConfig[process.env.NODE_ENV || 'development'];
 const sequelize = new Sequelize(
@@ -15,7 +17,9 @@ const sequelize = new Sequelize(
 const models = {
     User: UserEntity.init(sequelize, Sequelize),
     Channel: ChannelEntity.init(sequelize, Sequelize),
-    Device: DeviceEntity.init(sequelize, Sequelize)
+    Device: DeviceEntity.init(sequelize, Sequelize),
+    ResourceInfo: ResourceInfoEntity.init(sequelize, Sequelize),
+    CoinInfo: CoinInfoEntity.init(sequelize, Sequelize)
 };
 
 // This creates relationships in the ORM
