@@ -122,7 +122,8 @@ class StorageService {
                 name: newChannel.name
             },
             defaults: {
-                name: newChannel.name
+                name: newChannel.name,
+                type: newChannel.type
             }
         }).then(created => created[0]);
     }

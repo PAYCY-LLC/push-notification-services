@@ -35,10 +35,12 @@ class XRatesProvider {
 
             if (coinInfos) {
                 const coinGeckoIds = coinInfos.map(info => info.coinGeckoId)
-                const result = await this.defaultProvider.getXRates(coinGeckoIds, fiatCode)
+                if (coinGeckoIds.length > 0) {
+                    const result = await this.defaultProvider.getXRates(coinGeckoIds, fiatCode)
 
-                if (result) {
-                    return coinInfos.map(info => new XRate(info.id, info.code, info.name, fiatCode, result.data[info.id][fiatCode.toLowerCase()]))
+                    if (result) {
+                        return coinInfos.map(info => new XRate(info.id, info.code, info.name, fiatCode, result.data[info.id][fiatCode.toLowerCase()]))
+                    }
                 }
             }
         } catch (e) {
