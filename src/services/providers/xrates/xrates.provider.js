@@ -37,14 +37,29 @@ class XRatesProvider {
                 const coinGeckoIds = coinInfos.map(info => info.coinGeckoId)
                 if (coinGeckoIds.length > 0) {
                     const result = await this.defaultProvider.getXRates(coinGeckoIds, fiatCode)
+                    const xrates = []
 
-                    if (result) {
-                        return coinInfos.map(info => new XRate(info.id, info.code, info.name, fiatCode, result.data[info.id][fiatCode.toLowerCase()]))
-                    }
+                    coinInfos.forEach(info => {
+                        try {
+                            const xrate = new XRate(
+                                info.id,
+                                info.code,
+                                info.name,
+                                fiatCode,
+                                result.data[info.coinGeckoId.toLowerCase()][fiatCode.toLowerCase()]
+                            )
+
+                            xrates.push(xrate)
+                        } catch (e) {
+                            // ignore
+                        }
+                    })
+
+                    return xrates
                 }
             }
         } catch (e) {
-            this.logger.error(`Error getting XRates coinCodes: ${coinIds}: ${e}`)
+            this.logger.error(`Error getting XRates for coinCodes: ${coinIds}: ${e}`)
         }
 
         return {}

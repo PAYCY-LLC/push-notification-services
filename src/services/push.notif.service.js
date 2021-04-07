@@ -41,7 +41,7 @@ class PushNotificationService {
                 })
             }
         } catch (e) {
-            this.logger.info(e)
+            this.logger.error(`Error sending data: ${e}`)
         }
     }
 
@@ -56,7 +56,7 @@ class PushNotificationService {
                 }
             }
         } catch (e) {
-            this.logger.info(e)
+            this.logger.error(`Error getting messages: ${e}`)
         }
 
         return {}
@@ -64,7 +64,7 @@ class PushNotificationService {
 
     async subscribeToChannel(token, channel, bundleId) {
         try {
-            this.logger.info(`Subscribing token: ${token} , with channel:${channel}`)
+            this.logger.info(`Subscribing token: ${token}, with channel:${JSON.stringify(channel)}`)
 
             const channelEntity = {
                 name: JSON.stringify(channel),
@@ -83,7 +83,7 @@ class PushNotificationService {
                 return { id: createdChannel.id }
             }
         } catch (e) {
-            this.logger.error(e)
+            this.logger.error(`Error subscribing: ${e}`)
         }
 
         return {}
@@ -100,7 +100,7 @@ class PushNotificationService {
 
             StorageService.addDeviceToChannels(token, bundleId, savedChannels)
         } catch (e) {
-            this.logger.info(e)
+            this.logger.error(e)
         }
     }
 
@@ -122,7 +122,7 @@ class PushNotificationService {
                 }
             }
         } catch (e) {
-            this.logger.info(e)
+            this.logger.error(e)
         }
     }
 
@@ -142,7 +142,7 @@ class PushNotificationService {
                 }
             }
         } catch (e) {
-            this.logger.info(e)
+            this.logger.error(e)
         }
     }
 
@@ -150,7 +150,7 @@ class PushNotificationService {
         try {
             StorageService.removeDevice(token)
         } catch (e) {
-            this.logger.info(e)
+            this.logger.error(e)
         }
     }
 
@@ -162,7 +162,7 @@ class PushNotificationService {
                 return channelNames
             }
         } catch (e) {
-            this.logger.info(e)
+            this.logger.error(e)
         }
 
         return []
@@ -172,7 +172,7 @@ class PushNotificationService {
         try {
             StorageService.removeDevice(token)
         } catch (e) {
-            this.logger.info(e)
+            this.logger.error(e)
         }
     }
 
@@ -180,7 +180,7 @@ class PushNotificationService {
         try {
             StorageService.removeChannel(channelName)
         } catch (e) {
-            this.logger.info(e)
+            this.logger.error(e)
         }
     }
 }
