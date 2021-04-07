@@ -52,10 +52,10 @@ class MonitoringService {
     }
 
     async startAnalysisServices() {
-        await new Promise(r => setTimeout(r, 2000));
+        await new Promise(r => setTimeout(r, 5000));
         this.priceChangeAnalysisService.start()
 
-        // await new Promise(r => setTimeout(r, 3000));
+        // await new Promise(r => setTimeout(r, 6000));
         // this.trendingAnalysisService.start()
     }
 }

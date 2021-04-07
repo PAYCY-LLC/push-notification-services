@@ -64,11 +64,7 @@ class PushNotificationService {
 
     async subscribeToChannel(token, channel, bundleId) {
         try {
-            console.log('-------------------------------------')
-            console.log(channel)
-            console.log('-------------------------------------')
-            console.log(JSON.stringify(channel))
-            console.log('-------------------------------------')
+            this.logger.info(`Subscribing token: ${token} , with channel:${channel}`)
 
             const channelEntity = {
                 name: JSON.stringify(channel),
