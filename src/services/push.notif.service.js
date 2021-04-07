@@ -69,7 +69,7 @@ class PushNotificationService {
             console.log('-------------------------------------')
             console.log(JSON.stringify(channel))
             console.log('-------------------------------------')
-            
+
             const channelEntity = {
                 name: JSON.stringify(channel),
                 type: channel.type,
@@ -78,16 +78,16 @@ class PushNotificationService {
             const createdChannel = await StorageService.saveChannel(channelEntity)
 
             if (createdChannel) {
-                const created = StorageService.addDeviceToChannel(token, bundleId, createdChannel)
+                StorageService.addDeviceToChannel(token, bundleId, createdChannel)
 
                 if (channel.type === ChannelType.CRYPTO_PRICE || channel.type === ChannelType.TRENDS) {
                     this.monitoringService.updateActiveCoins(channel.type, [channel.data.coin_id])
                 }
 
-                return { id: created.id }
+                return { id: createdChannel.id }
             }
         } catch (e) {
-            this.logger.info(e)
+            this.logger.error(e)
         }
 
         return {}

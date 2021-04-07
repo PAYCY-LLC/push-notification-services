@@ -52,7 +52,7 @@ class PriceChangeAnalysisService {
                 this.baseCurrency
             )
 
-            if (latestXRates) {
+            if (Object.keys(latestXRates).length > 0) {
                 this.dailyOpeningXRates.push(...latestXRates)
                 this.activeCoinIds.push(...newCoinIds)
             }
