@@ -49,8 +49,9 @@ class PushNotificationServer {
         this.sequelize.sync({ force: false })
     }
 
-    start() {
+    async start() {
         this.http.listen(this.port);
+        await new Promise(r => setTimeout(r, 10000));
         logger.info(`App started listening port:${this.port}`)
 
         const identityService = new IdentityService(logger, appConfig)
