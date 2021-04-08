@@ -6,10 +6,10 @@ import ChannelType from '../../models/channel.type';
 class MonitoringService {
     constructor(logger, baseCurrency, messagingService, coinInfoService) {
         this.logger = logger;
+        this.baseCurrency = baseCurrency
         this.messagingService = messagingService
         this.coinInfoService = coinInfoService
         this.activeCoins = []
-        this.baseCurrency = baseCurrency
 
         this.dataCollectorService = new DataCollectorService(
             this.logger,

@@ -2,6 +2,7 @@ import CoinGecko from 'coingecko-api'
 
 class CoinGeckoProvider {
     constructor() {
+        CoinGecko.TIMEOUT = 60000
         this.coinGeckoClient = new CoinGecko();
     }
 

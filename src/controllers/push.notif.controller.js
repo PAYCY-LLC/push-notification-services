@@ -9,7 +9,7 @@ class PushNotificationController {
         this.pushNotificationService
             .getCachedMessages(req.params.token)
             .then(response => {
-                res.status(200).json(response);
+                res.status(response.status).json(response);
             })
             .catch(error => {
                 res.status(500).send(error);

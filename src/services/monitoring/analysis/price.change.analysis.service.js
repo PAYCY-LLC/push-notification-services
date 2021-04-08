@@ -3,7 +3,7 @@ import cron from 'node-cron';
 import StorageService from '../../storage.service'
 
 const CRON_DAILY_12AM = '0 5 0 * * *' // every day at 12:05 AM
-const CRON_EVERY_20M = '0 */20 * * * *' // every 20 minutes
+const CRON_EVERY_20M = '0 */15 * * * *' // every 20 minutes
 
 const XRATES_CHANGE_PERCENTAGES = [2, 5, 10]
 const CHANGE_24H = 'change_24hour'
@@ -138,8 +138,6 @@ class PriceChangeAnalysisService {
             }
         }
 
-        // const channelName = `${xrateData.coinId}_24hour_${alertPercentage}percent`
-
         const emojiCode = changePercentage > 0 ? EMOJI_ARROW_UP : EMOJI_ARROW_DOWN
         const changeDirection = changePercentage > 0 ? 'up' : 'down'
         const args = [xrateData.coinCode, changePercentage.toString(), emojiCode]
@@ -151,7 +149,7 @@ class PriceChangeAnalysisService {
 
         this.logger.info(`[PriceChange] Send Notif: Coin:${xrateData.coinCode}, Alert %:${alertPercentage}, Change %:${changePercentage}`)
         const status = await this.messagingService.sendDataToChannel(channel, data)
-        this.logger.info(`[PriceChange] Response status: ${status}`)
+        this.logger.info(`[PriceChange] MessageSend Response ${xrateData.coinName}:${alertPercentage}% -> ${status}`)
 
         return 0
     }

@@ -22,44 +22,54 @@ class PushNotificationService {
 
     async sendDataToChannel(sendTochannel, data) {
         try {
+            this.logger.info(`Sending data to:${JSON.stringify(sendTochannel)}, ${JSON.stringify(data)}`)
             const channelName = JSON.stringify(sendTochannel)
             const channel = await StorageService.getSubscribedDevicesByType(channelName, DeviceType.IOS)
-            if (channel && channel.devices) {
-                this.logger.info(`Saving message to Cache, Channel:${channelName}, ${data}`)
-                const messageData = { timestamp: Math.floor(Date.now() / 1000), message: data }
-                const redisRes = await this.messageCacheService.pushMessage(channelName, JSON.stringify(messageData))
-                this.logger.info(`Redis Response:${redisRes}`)
+            if (channel) {
+                if (channel.devices) {
+                    this.logger.info(`Saving message to Cache, Channel:${channelName}, ${data}`)
+                    const messageData = { timestamp: Math.floor(Date.now() / 1000), message: data }
+                    const redisRes = await this.messageCacheService.pushMessage(channelName, JSON.stringify(messageData))
+                    this.logger.info(`Redis Response:${redisRes}`)
 
-                const bundleIds = Object.entries(Utils.groupBy(channel.devices, 'bundleId'))
-                bundleIds.forEach(async bundle => {
-                    if (bundle[1]) {
+                    const bundleIds = Object.entries(Utils.groupBy(channel.devices, 'bundleId'))
+                    bundleIds.forEach(async bundle => {
+                        if (bundle[1]) {
                         // const tokens = bundle[1].map(d => d.token)
                         // this.logger.info(`Sending message to APN ${bundle[0]} , tokens:${tokens}`)
                         // const res = await this.apnsProvider.sendDataMessage(tokens, data, bundle[0])
                         // this.logger.info(`APNS Response:${JSON.stringify(res)}`)
-                    }
-                })
+                        }
+                    })
+
+                    return 'Ok'
+                }
             }
         } catch (e) {
             this.logger.error(`Error sending data: ${e}`)
         }
+
+        return 'Not send'
     }
 
     async getCachedMessages(token) {
         try {
             const device = await StorageService.getDeviceChannels(token)
-            if (device.channels) {
-                const cacheds = await Promise.all(device.channels.map(channel => this.messageCacheService.getMessage(channel.name)))
-                return {
-                    server_time: Math.floor(Date.now() / 1000),
-                    messages: cacheds.filter(val => val).map(str => JSON.parse(str))
+            if (device) {
+                if (device.channels) {
+                    const cacheds = await Promise.all(device.channels.map(channel => this.messageCacheService.getMessage(channel.name)))
+                    return {
+                        status: 200,
+                        server_time: Math.floor(Date.now() / 1000),
+                        messages: cacheds.filter(val => val).map(str => JSON.parse(str))
+                    }
                 }
             }
         } catch (e) {
             this.logger.error(`Error getting messages: ${e}`)
         }
 
-        return {}
+        return { status: 204 }
     }
 
     async subscribeToChannel(token, channel, bundleId) {
@@ -74,7 +84,8 @@ class PushNotificationService {
             const createdChannel = await StorageService.saveChannel(channelEntity)
 
             if (createdChannel) {
-                StorageService.addDeviceToChannel(token, bundleId, createdChannel)
+                const device = { token, type: token.length <= 34 ? DeviceType.ANDROID : DeviceType.IOS }
+                StorageService.addDeviceToChannel(device, bundleId, createdChannel)
 
                 if (channel.type === ChannelType.CRYPTO_PRICE || channel.type === ChannelType.TRENDS) {
                     this.monitoringService.updateActiveCoins(channel.type, [channel.data.coin_id])

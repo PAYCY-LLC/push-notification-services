@@ -146,13 +146,14 @@ class StorageService {
         })
     }
 
-    static addDeviceToChannel(token, bundleId, channel) {
+    static addDeviceToChannel(device, bundleId, channel) {
         return DeviceEntity.findOrCreate({
             where: {
-                token
+                token: device.token
             },
             defaults: {
-                token,
+                token: device.token,
+                type: device.type,
                 bundleId
             }
         }).then(created => {
