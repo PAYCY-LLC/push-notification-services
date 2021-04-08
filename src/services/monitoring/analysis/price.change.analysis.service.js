@@ -3,7 +3,7 @@ import cron from 'node-cron';
 import StorageService from '../../storage.service'
 
 const CRON_DAILY_12AM = '0 5 0 * * *' // every day at 12:05 AM
-const CRON_EVERY_20M = '0 */3 * * * *' // every 20 minutes
+const CRON_EVERY_20M = '0 */15 * * * *' // every 20 minutes
 
 const XRATES_CHANGE_PERCENTAGES = [2, 5, 10]
 const CHANGE_24H = 'change_24hour'
