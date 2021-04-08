@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 // import ApnsProvider from './provider/apns.provider';
+import jsonStringify from 'fast-json-stable-stringify'
+
 import DeviceType from '../models/device.type'
 import Utils from '../utils/utils'
 import StorageService from './storage.service'
@@ -23,7 +25,7 @@ class PushNotificationService {
     async sendDataToChannel(sendTochannel, data) {
         try {
             this.logger.info(`Sending data to:${JSON.stringify(sendTochannel)}, ${JSON.stringify(data)}`)
-            const channelName = JSON.stringify(sendTochannel)
+            const channelName = jsonStringify(sendTochannel)
             const channel = await StorageService.getSubscribedDevicesByType(channelName, DeviceType.IOS)
             if (channel) {
                 if (channel.devices) {
@@ -75,9 +77,9 @@ class PushNotificationService {
     async subscribeToChannel(token, channel, bundleId) {
         try {
             this.logger.info(`Subscribing token: ${token}, with channel:${JSON.stringify(channel)}`)
-
+            const channelStr = jsonStringify(channel)
             const channelEntity = {
-                name: JSON.stringify(channel),
+                name: channelStr,
                 type: channel.type,
                 data: channel.data
             }
@@ -103,7 +105,7 @@ class PushNotificationService {
     async subscribeToChannels(token, channels, bundleId) {
         try {
             const channelEntities = channels.map(channel => ({
-                name: JSON.stringify(channel),
+                name: jsonStringify(channel),
                 type: channel.type,
                 data: channel.data
             }))
@@ -121,7 +123,7 @@ class PushNotificationService {
 
             if (device && device.channels) {
                 const intersection = device.channels.filter(
-                    deviceChannel => deviceChannel.name === JSON.stringify(channel)
+                    deviceChannel => deviceChannel.name === jsonStringify(channel)
                 );
 
                 if (intersection) {

@@ -25,6 +25,7 @@
     "dotenv": "^8.2.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
+    "fast-json-stable-stringify": "^2.1.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
     "morgan": "^1.10.0",
