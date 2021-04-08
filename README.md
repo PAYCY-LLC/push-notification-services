@@ -12,51 +12,13 @@ $ cd push-notification-services
 Update configuration files based on Production **config** folder
 1. app.config.json
 2. config.json (database)
-3. pns.config.json (Apns and Firebase settings)
+3. pns.config.json (Apns settings)
 
-```bash  
+```bash
 $ docker-compose up -d
 ```
 
-## Installation
-
-1. Clone repo and install notification server :
-
-```bash
-$ git clone https://github.com/horizontalsystems/push-notification-services
-$ cd push-notification-services
-$ npm install
-```
-2. Install PostgreSQL database
-    a. Create database with name "pns"
-    b. Set username and password (postgres/postgres)
-
-2. Set/Update Firebase config file with Firebase project settings:
-
-```
-./config/fcm.config.json
-```
-
-3. Install client demo app (Android APK) from :
-
-```
-./client/pnstest.apk
-```
-
-## Starting
-
-1. Run start script with command:
-
-```bash
-$ node -r esm bin/app.js
-```
-
-Application will start express server on  http://localhost:5000/
-
-2. Start android demo application and subscribe to Topic (`PRICE_CHANGE`). (Topic  name hardcoded as PRICE_CHANGE)
-
-
-## API 
+## API
 1. Get JWT token (authenticate) :GET  ``/api/v1/identity/authenticate``
 
 >Query params:
@@ -65,7 +27,7 @@ Application will start express server on  http://localhost:5000/
 
     username = "username"  // User name
     password = "psw" // Title of notification message
- 
+
 ```
 
  > curl example :
@@ -83,7 +45,7 @@ curl "http://localhost:5000/api/v1/identity/authenticate?username=admin&password
     "token":"client_token", // Client token
     "title":"Title",  // Title of notification message
     "body":"Body" // Body of notification message
-} 
+}
 ```
 
  > curl example :
@@ -100,7 +62,7 @@ curl -H "Content-Type: application/json" --data '{"token":"client_token","title"
     "token":"client_token", // Client token
     "title":"Title",  // Title of notification message
     "body":"Body" // Body of notification message
-} 
+}
 ```
 
 >curl example :
@@ -113,9 +75,9 @@ curl -H "Content-Type: application/json" --data '{"title":"Title","body":"Body"}
 > Input params (Add Bearer authorization token):
 
 ```js
-{ 
+{
     "token":"token"
-} 
+}
 ```
 
 >curl example :
@@ -128,11 +90,11 @@ curl -H "Content-Type: application/json" --data '{"token":"token"}' http://local
 > Input params (Add Bearer authorization token):
 
 ```js
-{ 
+{
     "token":"token",
     "bundle_id": "bundle_id",
     "topics": ["topic1", "topic2", "topic3"]
-} 
+}
 ```
 
 >curl example :
@@ -148,7 +110,7 @@ curl -H "Content-Type: application/json" --data '{"token":"token", "topics": ["t
 {
     "token":"token",
     "bundle_id":"bundle_id",
-} 
+}
 ```
 
 >curl example :
@@ -161,10 +123,10 @@ curl -H "Content-Type: application/json" --data '{"token":"token"}' http://local
 > Input params (Add Bearer authorization token):
 
 ```js
-{ 
+{
     "token":"token",
     "topics": ["topic1", "topic2", "topic3"]
-} 
+}
 ```
 
 >curl example :
