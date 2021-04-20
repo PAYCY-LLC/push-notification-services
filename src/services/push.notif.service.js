@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
-// import ApnsProvider from './provider/apns.provider';
 import jsonStringify from 'fast-json-stable-stringify'
-
+import ApnsProvider from './provider/apns.provider';
 import DeviceType from '../models/device.type'
 import Utils from '../utils/utils'
 import StorageService from './storage.service'
@@ -37,10 +36,10 @@ class PushNotificationService {
                     const bundleIds = Object.entries(Utils.groupBy(channel.devices, 'bundleId'))
                     bundleIds.forEach(async bundle => {
                         if (bundle[1]) {
-                        // const tokens = bundle[1].map(d => d.token)
-                        // this.logger.info(`Sending message to APN ${bundle[0]} , tokens:${tokens}`)
-                        // const res = await this.apnsProvider.sendDataMessage(tokens, data, bundle[0])
-                        // this.logger.info(`APNS Response:${JSON.stringify(res)}`)
+                            const tokens = bundle[1].map(d => d.token)
+                            this.logger.info(`Sending message to APN ${bundle[0]} , tokens:${tokens}`)
+                            const res = await this.apnsProvider.sendDataMessage(tokens, data, bundle[0])
+                            this.logger.info(`APNS Response:${JSON.stringify(res)}`)
                         }
                     })
 
@@ -110,8 +109,15 @@ class PushNotificationService {
                 data: channel.data
             }))
             const savedChannels = await StorageService.saveChannels(channelEntities)
-
             StorageService.addDeviceToChannels(token, bundleId, savedChannels)
+
+            if (savedChannels) {
+                savedChannels.forEach(channel => {
+                    if (channel.type === ChannelType.CRYPTO_PRICE || channel.type === ChannelType.TRENDS) {
+                        this.monitoringService.updateActiveCoins(channel.type, [channel.data.coin_id])
+                    }
+                })
+            }
         } catch (e) {
             this.logger.error(e)
         }
