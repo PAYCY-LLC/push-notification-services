@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import jsonStringify from 'fast-json-stable-stringify'
-import ApnsProvider from './provider/apns.provider';
+import ApnsProvider from './providers/push-notif/apns.provider';
 import DeviceType from '../models/device.type'
 import Utils from '../utils/utils'
 import StorageService from './storage.service'
@@ -15,7 +15,7 @@ class PushNotificationService {
         this.appConfig = appConfig
         this.providerCoins = providerCoins
         this.baseCurrency = 'USD'
-        // this.apnsProvider = new ApnsProvider(appConfig, logger);
+        this.apnsProvider = new ApnsProvider(appConfig, logger);
         this.messageCacheService = new MessageCacheService(logger, appConfig, dbConfig)
         this.coinInfoService = new CoinInfoService(logger, providerCoins)
         this.monitoringService = new MonitoringService(logger, this.baseCurrency, this, this.coinInfoService)
