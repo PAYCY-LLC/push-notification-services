@@ -10,12 +10,13 @@ import MonitoringService from './monitoring/monitoring.service'
 import ChannelType from '../models/channel.type'
 
 class PushNotificationService {
-    constructor(logger, appConfig, dbConfig, providerCoins) {
+    constructor(logger, appConfig, pnsConfig, dbConfig, providerCoins) {
         this.logger = logger
         this.appConfig = appConfig
+        this.pnsConfig = pnsConfig
         this.providerCoins = providerCoins
         this.baseCurrency = 'USD'
-        this.apnsProvider = new ApnsProvider(appConfig, logger);
+        this.apnsProvider = new ApnsProvider(pnsConfig, logger);
         this.messageCacheService = new MessageCacheService(logger, appConfig, dbConfig)
         this.coinInfoService = new CoinInfoService(logger, providerCoins)
         this.monitoringService = new MonitoringService(logger, this.baseCurrency, this, this.coinInfoService)

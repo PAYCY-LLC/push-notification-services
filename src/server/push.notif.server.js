@@ -5,12 +5,14 @@ import logger from '../utils/logger.winston'
 import db from '../models/index'
 import IdentityService from '../services/identity.service'
 import AppConfig from '../../config/app.config.json'
+import PnsConfig from '../../config/pns.config.json'
 import providerCoins from '../../config/provider.coins.json'
 import DbConfig from '../../config/db.config.json'
 import PushNotificationService from '../services/push.notif.service'
 import Routes from '../routes'
 
 const appConfig = AppConfig[process.env.NODE_ENV || 'development'];
+const pnsConfig = PnsConfig[process.env.NODE_ENV || 'development'];
 const dbConfig = DbConfig[process.env.NODE_ENV || 'development'];
 
 const morgan = require('morgan');
@@ -55,7 +57,7 @@ class PushNotificationServer {
         logger.info(`App started listening port:${this.port}`)
 
         const identityService = new IdentityService(logger, appConfig)
-        const pushNotifService = new PushNotificationService(logger, appConfig, dbConfig, providerCoins)
+        const pushNotifService = new PushNotificationService(logger, appConfig, pnsConfig, dbConfig, providerCoins)
 
         const routes = new Routes(identityService, pushNotifService)
         this.initRoutes(routes.getRouter())
