@@ -107,15 +107,16 @@ class PushNotificationService {
             const channelEntities = channels.map(channel => ({
                 name: jsonStringify(channel),
                 type: channel.type,
-                data: channel.data
+                data: jsonStringify(channel.data)
             }))
             const savedChannels = await StorageService.saveChannels(channelEntities)
             StorageService.addDeviceToChannels(token, bundleId, savedChannels)
 
             if (savedChannels) {
                 savedChannels.forEach(channel => {
+                    const data = JSON.parse(channel.data)
                     if (channel.type === ChannelType.CRYPTO_PRICE || channel.type === ChannelType.TRENDS) {
-                        this.monitoringService.updateActiveCoins(channel.type, [channel.data.coin_id])
+                        this.monitoringService.updateActiveCoins(channel.type, [data.coin_id])
                     }
                 })
             }
