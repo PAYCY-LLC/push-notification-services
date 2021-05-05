@@ -26,15 +26,18 @@ class PushNotificationService {
         try {
             this.logger.info(`Sending data to:${JSON.stringify(sendTochannel)}, ${JSON.stringify(data)}`)
             const channelName = jsonStringify(sendTochannel)
-            const channel = await StorageService.getSubscribedDevicesByType(channelName, DeviceType.IOS)
+            const channel = await StorageService.getSubscribedDevices(channelName)
             if (channel) {
                 if (channel.devices) {
-                    this.logger.info(`Saving message to Cache, Channel:${channelName}, ${data}`)
-                    const messageData = { timestamp: Math.floor(Date.now() / 1000), message: data }
-                    const redisRes = await this.messageCacheService.pushMessage(channelName, JSON.stringify(messageData))
-                    this.logger.info(`Redis Response:${redisRes}`)
+                    const iosDevices = channel.devices.filter(device => device.type === DeviceType.IOS)
 
-                    const bundleIds = Object.entries(Utils.groupBy(channel.devices, 'bundleId'))
+                    if (iosDevices.length !== channel.devices.length) {
+                        this.logger.info(`Saving message to Cache, Channel:${channelName}, ${data}`)
+                        const messageData = { timestamp: Math.floor(Date.now() / 1000), message: data }
+                        this.messageCacheService.pushMessage(channelName, JSON.stringify(messageData))
+                    }
+
+                    const bundleIds = Object.entries(Utils.groupBy(iosDevices, 'bundleId'))
                     bundleIds.forEach(async bundle => {
                         if (bundle[1]) {
                             const tokens = bundle[1].map(d => d.token)
@@ -51,7 +54,7 @@ class PushNotificationService {
             this.logger.error(`Error sending data: ${e}`)
         }
 
-        return 'Not send'
+        return { error: 'Not send' }
     }
 
     async getCachedMessages(token) {
@@ -86,7 +89,7 @@ class PushNotificationService {
             const createdChannel = await StorageService.saveChannel(channelEntity)
 
             if (createdChannel) {
-                const device = { token, type: token.length <= 34 ? DeviceType.ANDROID : DeviceType.IOS }
+                const device = { token, type: token.length <= 36 ? DeviceType.ANDROID : DeviceType.IOS }
                 StorageService.addDeviceToChannel(device, bundleId, createdChannel)
 
                 if (channel.type === ChannelType.CRYPTO_PRICE || channel.type === ChannelType.TRENDS) {
@@ -110,7 +113,8 @@ class PushNotificationService {
                 data: jsonStringify(channel.data)
             }))
             const savedChannels = await StorageService.saveChannels(channelEntities)
-            StorageService.addDeviceToChannels(token, bundleId, savedChannels)
+            const device = { token, type: token.length <= 36 ? DeviceType.ANDROID : DeviceType.IOS }
+            StorageService.addDeviceToChannels(device, bundleId, savedChannels)
 
             if (savedChannels) {
                 savedChannels.forEach(channel => {

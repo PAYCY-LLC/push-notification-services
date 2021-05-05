@@ -23,7 +23,8 @@ class PushNotificationController {
                 req.body.message
             )
             .then(response => {
-                res.status(200).json({ success: response });
+                if (response.error) res.status(200).json({ error: response.error });
+                else res.status(200).json({ success: response });
             })
             .catch(error => {
                 res.status(500).send(error);

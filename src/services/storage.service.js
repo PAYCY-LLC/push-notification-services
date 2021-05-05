@@ -82,7 +82,7 @@ class StorageService {
                 model: DeviceEntity,
                 as: 'devices',
                 required: false,
-                attributes: ['id', 'token'],
+                attributes: ['id', 'token', 'bundleId', 'type'],
                 through: { attributes: [] }
             }],
             where: { name: channelName }
@@ -99,20 +99,6 @@ class StorageService {
                 through: { attributes: [] }
             }],
             where: { token }
-        })
-    }
-
-    static getSubscribedDevicesByType(channelName, deviceType) {
-        return ChannelEntity.findOne({
-            include: [{
-                model: DeviceEntity,
-                as: 'devices',
-                required: false,
-                attributes: ['id', 'token', 'bundleId', 'type'],
-                through: { attributes: [] },
-                where: { type: deviceType }
-            }],
-            where: { name: channelName }
         })
     }
 
@@ -163,13 +149,14 @@ class StorageService {
         });
     }
 
-    static addDeviceToChannels(token, bundleId, channels) {
+    static addDeviceToChannels(device, bundleId, channels) {
         return DeviceEntity.findOrCreate({
             where: {
-                token
+                token: device.token
             },
             defaults: {
-                token,
+                token: device.token,
+                type: device.type,
                 bundleId
             }
         }).then(created => {
