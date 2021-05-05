@@ -153,7 +153,9 @@ class PushNotificationService {
 
             if (device && device.channels) {
                 const intersection = device.channels.filter(
-                    deviceChannel => channels.some(sChannel => deviceChannel.name === JSON.stringify(sChannel))
+                    deviceChannel => channels.some(
+                        sChannel => deviceChannel.name === jsonStringify(sChannel)
+                    )
                 );
 
                 if (intersection.length === device.channels.length) {
